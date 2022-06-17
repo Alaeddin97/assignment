@@ -14,9 +14,9 @@ import java.util.Optional;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    CustomPasswordEncorder customPasswordEncorder;
+    private CustomPasswordEncorder customPasswordEncorder;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

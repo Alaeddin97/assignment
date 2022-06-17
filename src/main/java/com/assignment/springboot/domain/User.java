@@ -81,5 +81,13 @@ public class User implements UserDetails {
         return password;
     }
 
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", cohortStartDate=" + cohortStartDate +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

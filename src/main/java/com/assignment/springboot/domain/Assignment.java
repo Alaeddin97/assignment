@@ -1,5 +1,7 @@
 package com.assignment.springboot.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,8 +13,9 @@ public class Assignment {
     private String githubUrl;
     private String branch;
     private String codeReviewVideoUrl;
+    @JsonManagedReference("user")
     @ManyToOne(optional = false)
-    private com.assignment.springboot.domain.User user;
+    private User user;
 
     //getters setters
 
