@@ -1,49 +1,32 @@
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
+import ajax from "../Services/fetchService";
 
 function Dashboard() {
   const [jwt, setJwt] = useLocalState("", "jwt");
   const [assignments, setAssignments] = useState();
   useEffect(() => {
-    fetch("api/assignments", {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${jwt}`,
-      },
-      method: "GET",
-    })
-      .then((response) => {
-        if (response.status === 200) return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setAssignments(data);
-      });
+    ajax("api/assignments", "GET", jwt).then((data) => {
+      setAssignments(data);
+      console.log("data: ");
+      console.log(data);
+    });
   }, []);
 
   function createAssignment() {
-    fetch("api/assignments", {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${jwt}`,
-      },
-      method: "POST",
-    })
-      .then((response) => {
-        if (response.status === 200) return response.json();
-      })
-      .then((assignment) => {
-        console.log(assignment);
-        window.location.href = `/assignments/${assignment.id}`;
-      });
+    ajax("api/assignments", "POST", jwt).then((assignment) => {
+      console.log(assignment);
+      window.location.href = `/assignments/${assignment.id}`;
+    });
   }
+
   return (
     <div>
       <div>
         {assignments ? (
           assignments.map((assignment) => (
-            <div>
+            <div key={assignment.id}>
               <Link to={`/assignments/${assignment.id}`}>
                 Assignment ID: {assignment.id}
               </Link>

@@ -28,4 +28,16 @@ public class AssignmentService {
     public Optional<Assignment> findById(Long assignmentID) {
         return assignmentRepository.findById(assignmentID);
     }
+
+    public Assignment updateAssignment(Long assignmentID, Assignment assignment) {
+        Optional<Assignment>assignmentOpt=findById(assignmentID);
+        Assignment newAssignment=assignmentOpt.get();
+        newAssignment.setBranch(assignment.getBranch());
+        newAssignment.setGithubUrl(assignment.getGithubUrl());
+        assignmentRepository.save(newAssignment);
+        return newAssignment;
+
+    }
+
+
 }

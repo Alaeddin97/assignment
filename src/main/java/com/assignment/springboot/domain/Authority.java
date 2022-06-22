@@ -1,6 +1,7 @@
 package com.assignment.springboot.domain;
 
 import com.assignment.springboot.domain.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -12,9 +13,9 @@ public class Authority implements GrantedAuthority {
     private Long id;
     private String authority;
     @ManyToOne(optional = false)
+    @JsonIgnore
     private User user;
     //constructors
-
     public Authority() {
     }
 

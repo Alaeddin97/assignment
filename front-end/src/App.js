@@ -8,7 +8,7 @@ import Login from "./Login";
 import PrivateRoute from "./PrivateRoute";
 import { useLocalState } from "./util/useLocalStorage";
 import "./App.css";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   const [jwt, setJwt] = useLocalState("", "jwt");
   useEffect(() => {
@@ -22,7 +22,7 @@ function App() {
           "Content-Type": "application/json",
         },
         method: "POST",
-        body: JSON.stringify(obj),
+        body: JSON.stringify(obj)
       })
         .then((resp) => Promise.all([resp.json(), resp.headers]))
         .then(([body, headers]) => {

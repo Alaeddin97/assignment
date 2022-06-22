@@ -32,4 +32,13 @@ public class AssignmentController {
         Optional<Assignment>assignmentOpt=assignmentService.findById(assignmentID);
         return ResponseEntity.ok(assignmentOpt.orElse(new Assignment()));
     }
+    @PostMapping("/updateAssignment/{assignmentID}")
+    public ResponseEntity<?> updateAssignment(
+                                        @PathVariable Long assignmentID,
+                                        @AuthenticationPrincipal User user,
+                                        @RequestBody Assignment assignment){
+        Assignment newAssignment=assignmentService.updateAssignment(assignmentID,assignment);
+        return ResponseEntity.ok(newAssignment);
+    }
+
 }

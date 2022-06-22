@@ -13,7 +13,6 @@ public class Assignment {
     private String githubUrl;
     private String branch;
     private String codeReviewVideoUrl;
-    @JsonManagedReference("user")
     @ManyToOne(optional = false)
     private User user;
 
