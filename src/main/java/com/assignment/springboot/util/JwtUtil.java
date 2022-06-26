@@ -21,10 +21,14 @@ public class JwtUtil implements Serializable {
 
     private static final long serialVersionUID = -2550185165626007488L;
 
-    public static final long JWT_TOKEN_VALIDITY = 12 * 30 * 24 * 60 * 60;
+    public static final long JWT_TOKEN_VALIDITY = 60*60*24*30;
 
     @Value("${jwt.secret}")
     private String secret;
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);

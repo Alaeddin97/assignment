@@ -22,7 +22,7 @@ public class AssignmentController {
         Assignment newAssignment=assignmentService.save(user);
         return ResponseEntity.ok(newAssignment);
     }
-    @GetMapping("")
+    @GetMapping("/assignmentsList")
     public ResponseEntity<?> getAssignments(@AuthenticationPrincipal User user){
         Set<Assignment>assignmentSet=assignmentService.assignmentSet(user);
         return ResponseEntity.ok(assignmentSet);
@@ -40,5 +40,6 @@ public class AssignmentController {
         Assignment newAssignment=assignmentService.updateAssignment(assignmentID,assignment);
         return ResponseEntity.ok(newAssignment);
     }
+
 
 }

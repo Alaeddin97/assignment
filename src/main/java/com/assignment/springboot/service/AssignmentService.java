@@ -3,6 +3,7 @@ package com.assignment.springboot.service;
 import com.assignment.springboot.domain.Assignment;
 import com.assignment.springboot.domain.User;
 import com.assignment.springboot.repository.AssignmentRepository;
+import com.assignment.springboot.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,5 @@ public class AssignmentService {
         return newAssignment;
 
     }
-
 
 }
