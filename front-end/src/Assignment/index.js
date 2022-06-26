@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Badge, Button, Col, Dropdown, Form, Row } from "react-bootstrap";
 import ajax from "../Services/fetchService";
 import { useLocalState } from "../util/useLocalStorage";
 
@@ -9,15 +10,20 @@ const AssignmentView = () => {
     branch: "",
     githubUrl: "",
   });
+  const [assignmentEnums, setAssignmentEnums] = useState([]);
 
   useEffect(() => {
-    ajax("/api/assignments/" + assignmentsID, "GET", jwt).then((data) => {
-      if (data.branch === null) data.branch = "";
-      if (data.githubUrl === null) data.githubUrl = "";
-      setAssignments(data);
-      console.log("data: ");
-      console.log(data);
-    });
+    ajax("/api/assignments/" + assignmentsID, "GET", jwt).then(
+      (assignmentInfo) => {
+        let assignmentData = assignmentInfo.assignment;
+        if (assignmentData.branch === null) assignmentData.branch = "";
+        if (assignmentData.githubUrl === null) assignmentData.githubUrl = "";
+        setAssignments(assignmentData);
+        setAssignmentEnums(assignmentInfo.assignmentEnums);
+        console.log(`dataInfo: `);
+        console.log(assignmentInfo);
+      }
+    );
   }, []);
 
   function save() {
@@ -41,38 +47,63 @@ const AssignmentView = () => {
 
   return (
     <div>
-      <h1 className="assignmentsID">Assignment{" " + assignmentsID}</h1>
-      {assignments ? (
-        <h1>Assignment status:{" " + assignments.status}</h1>
-      ) : (
-        <></>
-      )}
-      <h1>
-        {" "}
-        <label htmlFor="branch">
-          Branch:
-          <input
-            type="text"
-            id="branch"
-            onChange={(e) => updateAssignment("branch", e.target.value)}
-            value={assignments.branch}
-          />
-        </label>
-        <br></br>
-      </h1>
-
-      <h1>
-        <label htmlFor="githubURL">
-          GithubURL:
-          <input
-            id="githubURL"
-            onChange={(e) => updateAssignment("githubUrl", e.target.value)}
-            value={assignments.githubUrl}
-          />
-        </label>
-        <br></br>
-      </h1>
-      <button onClick={() => save()}>Submit</button>
+      <Row className="d-flex align-items-center">
+        <Col className="m-3" sm="4">
+          <h2 className="assignmentsID">Assignment{" " + assignmentsID}</h2>
+        </Col>
+        <Col sm="5">
+          {assignments ? (
+            <Badge pill bg="primary" className="fs-6">
+              {" " + assignments.status}
+            </Badge>
+          ) : (
+            <></>
+          )}
+        </Col>
+      </Row>
+      <Row>
+        <Dropdown>
+          <Dropdown.Toggle variant="success" id="dropdown-basic" className="m-3">
+            Assignment Number
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            {assignmentEnums.map((element) => 
+              <Dropdown.Item href="#/action-1">
+                {element.assignmentName}
+              </Dropdown.Item>
+            )}
+          </Dropdown.Menu>
+        </Dropdown>
+      </Row>
+      <Row>
+        <Form.Group className="d-flex align-items-center">
+          <Col sm="3">
+            <Form.Label className="fs-4 m-3">Branch: </Form.Label>
+          </Col>
+          <Col sm="8">
+            <Form.Control
+              onChange={(e) => updateAssignment("branch", e.target.value)}
+              value={assignments.branch}
+            />
+          </Col>
+        </Form.Group>
+      </Row>
+      <Row>
+        <Form.Group className="d-flex align-items-center">
+          <Col sm="3">
+            <Form.Label className="fs-4 m-3">GithubURL: </Form.Label>
+          </Col>
+          <Col sm="8">
+            <Form.Control
+              onChange={(e) => updateAssignment("githubUrl", e.target.value)}
+              value={assignments.githubUrl}
+            />
+          </Col>
+        </Form.Group>
+      </Row>
+      <Button className="m-3" size="lg" onClick={() => save()}>
+        Submit
+      </Button>
     </div>
   );
 };

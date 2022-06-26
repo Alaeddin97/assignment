@@ -1,7 +1,9 @@
 package com.assignment.springboot.web;
 
+import com.assignment.springboot.assignmentEnum.AssignmentEnum;
 import com.assignment.springboot.domain.Assignment;
 import com.assignment.springboot.domain.User;
+import com.assignment.springboot.dto.AssignmentResponse;
 import com.assignment.springboot.service.AssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.Set;
 public class AssignmentController {
     @Autowired
     private AssignmentService assignmentService;
+
     @PostMapping("")
     public ResponseEntity<?> createAssignment(@AuthenticationPrincipal User user ){
         Assignment newAssignment=assignmentService.save(user);
@@ -30,7 +33,8 @@ public class AssignmentController {
     @GetMapping("{assignmentID}")
     public ResponseEntity<?> getOneAssignment(@PathVariable Long assignmentID, @AuthenticationPrincipal User user){
         Optional<Assignment>assignmentOpt=assignmentService.findById(assignmentID);
-        return ResponseEntity.ok(assignmentOpt.orElse(new Assignment()));
+        AssignmentResponse response=new AssignmentResponse(assignmentOpt.orElse(new Assignment()));
+        return ResponseEntity.ok(response);
     }
     @PostMapping("/updateAssignment/{assignmentID}")
     public ResponseEntity<?> updateAssignment(
