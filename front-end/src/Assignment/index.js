@@ -102,7 +102,7 @@ const AssignmentView = () => {
         </Form.Group>
       </Row>
       <Button className="m-3" size="lg" onClick={() => save()}>
-        Submit
+        Submit assignment
       </Button>
     </div>
   );

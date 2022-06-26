@@ -1,0 +1,9 @@
+@Entity : create table from a class
+@Table(name="name"): change the name to be different of the class name
+@Id @GenerateValue(strategy=GenerateType.IDENTITY) : generate the primary key of the table
+@JsonIgnore: make it so that when transferring the java object from spring to React, it doesn't send this data
+fetch = FetchType.EAGER:  fetch immediately (load the entity object by default)
+fetch = FetchType.LAZY = fetch when needed(load the entity object when mentionned)
+@JsonFormat(shape = JsonFormat.Shape.OBJECT): Before an Enum to make accessible the attributes inside the enum
+@RequestParam: it is used to receive data from the GET method (React), it is the equivalent of @RequestBody for the POST method (React)
+@AuthenticationPrincipal (User user): get infos of the admin user
