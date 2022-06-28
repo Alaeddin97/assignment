@@ -20,33 +20,33 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-     UserDetailsService userDetailsService;
+    UserDetailsService userDetailsService;
     @Autowired
-     CustomPasswordEncorder customPasswordEncorder;
+    CustomPasswordEncorder customPasswordEncorder;
     @Autowired
-     JwtFilter jwtFilter;
-    @Override @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception{
+    JwtFilter jwtFilter;
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http =http.csrf().disable().cors().disable();
+        http = http.csrf().disable().cors().disable();
 
-        http=http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
+        http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
 
-        http=http.exceptionHandling()
-                .authenticationEntryPoint(((request, response, authException) -> {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,authException.getMessage());
-                })).and();
+        http = http.exceptionHandling().authenticationEntryPoint(((request, response, authException) -> {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+        })).and();
 
-        http.authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated();
+        http.authorizeRequests().antMatchers("/api/auth/**").permitAll().anyRequest().authenticated();
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(customPasswordEncorder.getPasswordEncoder());

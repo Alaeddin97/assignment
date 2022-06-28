@@ -12,6 +12,8 @@ public class Assignment {
     private String status;
     private String githubUrl;
     private String branch;
+    private int number;
+    private String name;
     private String codeReviewVideoUrl;
     @ManyToOne(optional = false)
     private User user;
@@ -64,5 +66,13 @@ public class Assignment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 }

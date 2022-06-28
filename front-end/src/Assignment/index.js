@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Button, Col, Dropdown, Form, Row } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Col,
+  Dropdown,
+  DropdownButton,
+  Form,
+  Row,
+} from "react-bootstrap";
 import ajax from "../Services/fetchService";
 import { useLocalState } from "../util/useLocalStorage";
 
@@ -11,7 +19,7 @@ const AssignmentView = () => {
     githubUrl: "",
   });
   const [assignmentEnums, setAssignmentEnums] = useState([]);
-
+  const [assignmentNumber, setAssignmentNumber] = useState(null);
   useEffect(() => {
     ajax("/api/assignments/" + assignmentsID, "GET", jwt).then(
       (assignmentInfo) => {
@@ -62,18 +70,23 @@ const AssignmentView = () => {
         </Col>
       </Row>
       <Row>
-        <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-basic" className="m-3">
-            Assignment Number
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            {assignmentEnums.map((element) => 
-              <Dropdown.Item href="#/action-1">
-                {element.assignmentName}
-              </Dropdown.Item>
-            )}
-          </Dropdown.Menu>
-        </Dropdown>
+        <DropdownButton
+          title={
+            assignmentNumber
+              ? `Assignment ${assignmentNumber}`
+              : `Select assignment`
+          }
+          onSelect={(selectedElement) => {
+            setAssignmentNumber(selectedElement);
+          }}
+        >
+          {
+            (assignmentEnums.map((element) => (
+              <Dropdown.Item>{element.assignmentNum}</Dropdown.Item>
+            ))
+            )
+          }
+        </DropdownButton>
       </Row>
       <Row>
         <Form.Group className="d-flex align-items-center">
