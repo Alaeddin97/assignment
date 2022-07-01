@@ -1,9 +1,9 @@
 package com.assignment.springboot.service;
 
+import com.assignment.springboot.assignmentEnum.AssignmentStatusEnum;
 import com.assignment.springboot.domain.Assignment;
 import com.assignment.springboot.domain.User;
 import com.assignment.springboot.repository.AssignmentRepository;
-import com.assignment.springboot.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,7 @@ public class AssignmentService {
     public Assignment save(User user) {
         Assignment assignment=new Assignment();
         assignment.setUser(user);
+        assignment.setStatus(AssignmentStatusEnum.PENDING_SUBMISSION.getStatus());
         assignmentRepository.save(assignment);
         return assignment;
     }
@@ -35,6 +36,8 @@ public class AssignmentService {
         Assignment newAssignment=assignmentOpt.get();
         newAssignment.setBranch(assignment.getBranch());
         newAssignment.setGithubUrl(assignment.getGithubUrl());
+        newAssignment.setStatus(assignment.getStatus());
+        newAssignment.setNumber(assignment.getNumber());
         assignmentRepository.save(newAssignment);
         return newAssignment;
 

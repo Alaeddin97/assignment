@@ -10,7 +10,6 @@ const PrivateRoute = ({ children }) => {
   if (jwt) {
     ajax(`/api/auth/validate?token=${jwt}`,"get",jwt,null).then((isValid) => {
       setIsvalid(isValid);
-      console.log(`isValid: ${isValid}`);
       setIsLoading(false);
     });
   } else {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Badge,
   Button,
+  ButtonGroup,
   Col,
   Dropdown,
   DropdownButton,
@@ -14,80 +15,101 @@ import { useLocalState } from "../util/useLocalStorage";
 const AssignmentView = () => {
   const assignmentsID = window.location.href.split("/assignments/")[1];
   const [jwt, setJwt] = useLocalState("", "jwt");
-  const [assignments, setAssignments] = useState({
+  const [assignment, setAssignment] = useState({
     branch: "",
     githubUrl: "",
+    number: null,
+    status:[],
   });
   const [assignmentEnums, setAssignmentEnums] = useState([]);
-  const [assignmentNumber, setAssignmentNumber] = useState(null);
+  const [assignmentStatues, setAssignmentStatues] = useState(null);
+  function save() {
+    if (assignment.status === assignmentStatues[0].status) {
+      assignment.status=assignmentStatues[1].status;
+     // updateAssignment("status", assignmentStatues[1].status);
+      console.log("status: ");
+      console.log(assignment.status);
+    } else {
+      console.log("FALSE");
+      console.log("status: ");
+    }
+    ajax(
+      "/api/assignments/updateAssignment/" + assignmentsID,
+      "POST",
+      jwt,
+      assignment
+    ).then((assignmentData) => {
+      setAssignment(assignmentData);
+    });
+  }
+
   useEffect(() => {
     ajax("/api/assignments/" + assignmentsID, "GET", jwt).then(
       (assignmentInfo) => {
         let assignmentData = assignmentInfo.assignment;
-        if (assignmentData.branch === null) assignmentData.branch = "";
-        if (assignmentData.githubUrl === null) assignmentData.githubUrl = "";
-        setAssignments(assignmentData);
+        if (assignmentData.branch === null) assignmentData.branch = ""; //Avoid warning about null value of branch first GET
+        if (assignmentData.githubUrl === null) assignmentData.githubUrl = ""; //Avoid warning about null value of githubUrl first GET
+        setAssignment(assignmentData);
         setAssignmentEnums(assignmentInfo.assignmentEnums);
-        console.log(`dataInfo: `);
+        setAssignmentStatues(assignmentInfo.assignmentStatusEnums);
         console.log(assignmentInfo);
       }
     );
   }, []);
 
-  function save() {
-    ajax(
-      "/api/assignments/updateAssignment/" + assignmentsID,
-      "POST",
-      jwt,
-      assignments
-    ).then((data) => {
-      console.log("data: ");
-      console.log(data);
-    });
-  }
-
   function updateAssignment(props, value) {
-    const newAssignment = { ...assignments };
+    const newAssignment = { ...assignment };
     newAssignment[props] = value;
-    setAssignments(newAssignment);
-    console.log(assignments);
+    setAssignment(newAssignment);
   }
 
   return (
     <div>
       <Row className="d-flex align-items-center">
         <Col className="m-3" sm="4">
-          <h2 className="assignmentsID">Assignment{" " + assignmentsID}</h2>
+          <h2 className="assignmentsID">
+            {assignment.number ? `Assignment ${assignment.number}` : <></>}
+          </h2>
         </Col>
         <Col sm="5">
-          {assignments ? (
+          {assignment ? (
             <Badge pill bg="primary" className="fs-6">
-              {" " + assignments.status}
+              {" " + assignment.status}
             </Badge>
           ) : (
             <></>
           )}
         </Col>
       </Row>
-      <Row>
+
+      <Col className="m-3">
         <DropdownButton
+          as={ButtonGroup}
+          variant={"info"}
           title={
-            assignmentNumber
-              ? `Assignment ${assignmentNumber}`
-              : `Select assignment`
+            assignment.number
+              ? `Assignment ${assignment.number}`
+              : "Select an Assignment"
           }
           onSelect={(selectedElement) => {
-            setAssignmentNumber(selectedElement);
+            console.log("number before: ");
+            console.log(assignment.number);
+            updateAssignment("number", selectedElement);
+            console.log("number after: ");
+            console.log(assignment.number);
           }}
         >
-          {
-            (assignmentEnums.map((element) => (
-              <Dropdown.Item>{element.assignmentNum}</Dropdown.Item>
-            ))
-            )
-          }
+          {assignmentEnums.map((assignmentEnum) => (
+            <Dropdown.Item
+              key={assignmentEnum.assignmentNum}
+              eventKey={assignmentEnum.assignmentNum}
+            >
+              {assignmentEnum.assignmentNum}
+            </Dropdown.Item>
+          ))}
         </DropdownButton>
-      </Row>
+      </Col>
+
       <Row>
         <Form.Group className="d-flex align-items-center">
           <Col sm="3">
@@ -96,7 +118,7 @@ const AssignmentView = () => {
           <Col sm="8">
             <Form.Control
               onChange={(e) => updateAssignment("branch", e.target.value)}
-              value={assignments.branch}
+              value={assignment.branch}
             />
           </Col>
         </Form.Group>
@@ -109,7 +131,7 @@ const AssignmentView = () => {
           <Col sm="8">
             <Form.Control
               onChange={(e) => updateAssignment("githubUrl", e.target.value)}
-              value={assignments.githubUrl}
+              value={assignment.githubUrl}
             />
           </Col>
         </Form.Group>
