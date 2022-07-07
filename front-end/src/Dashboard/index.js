@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
-import { Button, Card, gridTemplateColumns } from "react-bootstrap";
+import { Badge, Button, Card, gridTemplateColumns, Row } from "react-bootstrap";
 
 const Dashboard = () => {
   const [jwt, setJwt] = useLocalState("", "jwt");
@@ -22,10 +22,33 @@ const Dashboard = () => {
               </Link>
             </div> */
   }
-
+  function parseJwt(jwt){
+    try {
+      return JSON.parse(atob(jwt.split('.')[1]));
+    } catch (e) {
+      return null;
+    }
+  };
   return (
     <div>
-      <Button variant="success" size="lg" className="m-3" onClick={() => createAssignment()}>Submit assignment</Button>
+      {console.log(parseJwt(jwt))}
+      <div className="d-flex justify-content-end" 
+      style={{cursor:"pointer"}}
+      onClick={()=>{
+        setJwt(null);
+        window.location.href=`/login`;
+      }
+        }>
+          Logout
+        </div>
+      <Button
+        variant="success"
+        size="lg"
+        className="m-3"
+        onClick={() => createAssignment()}
+      >
+        Submit assignment
+      </Button>
       <div className="d-flex flex-wrap bd-highlight example-parent">
         {assignments ? (
           assignments.map((assignment) => (
@@ -34,7 +57,7 @@ const Dashboard = () => {
                 <Card.Body className="d-flex flex-column">
                   <Card.Title>Assignment #{assignment.id}</Card.Title>
                   <Card.Subtitle className="mb-2 text-muted">
-                    {assignment.status}
+                    <Badge>{assignment.status}</Badge>
                   </Card.Subtitle>
                   <Card.Text>
                     <p>

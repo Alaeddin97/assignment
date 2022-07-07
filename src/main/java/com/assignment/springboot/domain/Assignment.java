@@ -18,6 +18,15 @@ public class Assignment {
     @ManyToOne(optional = false)
     private User user;
 
+
+    //constructors
+
+    public Assignment(int number) {
+        this.number = number;
+    }
+
+    public Assignment() {
+    }
     //getters setters
 
     public Long getId() {
