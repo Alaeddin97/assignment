@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Badge,
   Button,
@@ -13,49 +13,18 @@ import ajax from "../Services/fetchService";
 import { useLocalState } from "../util/useLocalStorage";
 
 const AssignmentView = () => {
-  const assignmentsID = window.location.href.split("/assignments/")[1];
+  const assignmentId = window.location.href.split("/assignments/")[1];
   const [jwt, setJwt] = useLocalState("", "jwt");
   const [assignment, setAssignment] = useState({
     branch: "",
     githubUrl: "",
     number: null,
-    status:[],
+    status: [],
   });
   const [assignmentEnums, setAssignmentEnums] = useState([]);
-  const [assignmentStatues, setAssignmentStatues] = useState(null);
-  function save() {
-    if (assignment.status === assignmentStatues[0].status) {
-      assignment.status=assignmentStatues[1].status;
-     // updateAssignment("status", assignmentStatues[1].status);
-      console.log("status: ");
-      console.log(assignment.status);
-    } else {
-      console.log("FALSE");
-      console.log("status: ");
-    }
-    ajax(
-      "/api/assignments/updateAssignment/" + assignmentsID,
-      "POST",
-      jwt,
-      assignment
-    ).then((assignmentData) => {
-      setAssignment(assignmentData);
-    });
-  }
+  const [assignmentStatues, setAssignmentStatues] = useState([]);
 
-  useEffect(() => {
-    ajax("/api/assignments/" + assignmentsID, "GET", jwt).then(
-      (assignmentInfo) => {
-        let assignmentData = assignmentInfo.assignment;
-        if (assignmentData.branch === null) assignmentData.branch = ""; //Avoid warning about null value of branch first GET
-        if (assignmentData.githubUrl === null) assignmentData.githubUrl = ""; //Avoid warning about null value of githubUrl first GET
-        setAssignment(assignmentData);
-        setAssignmentEnums(assignmentInfo.assignmentEnums);
-        setAssignmentStatues(assignmentInfo.assignmentStatusEnums);
-        console.log(assignmentInfo);
-      }
-    );
-  }, []);
+  const prevAssignmentValue = useRef(assignment);
 
   function updateAssignment(props, value) {
     const newAssignment = { ...assignment };
@@ -63,11 +32,49 @@ const AssignmentView = () => {
     setAssignment(newAssignment);
   }
 
+  function save() {
+    if (assignment.status === assignmentStatues[0].status) {
+      updateAssignment("status", assignmentStatues[1].status);
+    } else {
+      persist();
+    }
+  }
+
+  function persist() {
+    ajax("/api/assignments/updateAssignment/" + assignmentId, "POST", jwt, assignment).then(
+      (assignmentData) => {
+        setAssignment(assignmentData);
+      }
+    );
+  }
+
+  useEffect(() => {
+    if (prevAssignmentValue.current.status !== assignment.status) {
+      persist();
+    }
+    prevAssignmentValue.current = assignment;
+  }, [assignment]);
+
+  useEffect(() => {
+    ajax("/api/assignments/" + assignmentId, "GET", jwt).then(
+      (assignmentInfo) => {
+        console.log(assignmentInfo);
+        let assignmentData = assignmentInfo.assignment;
+        console.log(assignmentData);
+        if (assignmentData.branch === null) assignmentData.branch = ""; //Avoid warning about null value of branch first GET
+        if (assignmentData.githubUrl === null) assignmentData.githubUrl = ""; //Avoid warning about null value of githubUrl first GET
+        setAssignment(assignmentData);
+        setAssignmentEnums(assignmentInfo.assignmentEnums);
+        setAssignmentStatues(assignmentInfo.assignmentStatusEnums);
+      }
+    );
+  }, []);
+
   return (
     <div>
       <Row className="d-flex align-items-center">
         <Col className="m-3" sm="4">
-          <h2 className="assignmentsID">
+          <h2 className="assignmentId">
             {assignment.number ? `Assignment ${assignment.number}` : <></>}
           </h2>
         </Col>
@@ -138,6 +145,9 @@ const AssignmentView = () => {
       </Row>
       <Button className="m-3" size="lg" onClick={() => save()}>
         Submit assignment
+      </Button>
+      <Button className="gap-3 m-3" size="lg" onClick={() => {window.location.href=`/Dashboard`}}>
+        Back to Dashboard
       </Button>
     </div>
   );

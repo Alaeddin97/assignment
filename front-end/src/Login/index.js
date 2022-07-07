@@ -23,13 +23,24 @@ function Login(props) {
         .then((resp) => Promise.all([resp.json(), resp.headers]))
         .then(([body, headers]) => {
           setJwt(headers.get("authorization"));
-          console.log(`headers: ${headers.get("authorization")}`);
+          window.location.href=`/Dashboard`;
+
         });
     //}
   }
 
+  function parseJwt(jwt){
+    try {
+      return JSON.parse(atob(jwt.split('.')[1]));
+    } catch (e) {
+      return null;
+    }
+  };
+
+
   return (
     <div>
+      {console.log(parseJwt(jwt))}
       <Container>
         <Row className="justify-content-center align-items-center">
           <Col md="8" lg="6">

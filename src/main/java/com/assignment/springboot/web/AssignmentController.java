@@ -1,6 +1,7 @@
 package com.assignment.springboot.web;
 
 import com.assignment.springboot.assignmentEnum.AssignmentEnum;
+import com.assignment.springboot.assignmentEnum.AssignmentStatusEnum;
 import com.assignment.springboot.domain.Assignment;
 import com.assignment.springboot.domain.User;
 import com.assignment.springboot.dto.AssignmentResponse;
@@ -21,16 +22,18 @@ public class AssignmentController {
     private AssignmentService assignmentService;
 
     @PostMapping("")
-    public ResponseEntity<?> createAssignment(@AuthenticationPrincipal User user ){
+    public ResponseEntity<?> createAssignment(
+            @AuthenticationPrincipal User user ){
         Assignment newAssignment=assignmentService.save(user);
         return ResponseEntity.ok(newAssignment);
     }
+
     @GetMapping("/assignmentsList")
     public ResponseEntity<?> getAssignments(@AuthenticationPrincipal User user){
         Set<Assignment>assignmentSet=assignmentService.assignmentSet(user);
         return ResponseEntity.ok(assignmentSet);
     }
-    @GetMapping("{assignmentID}")
+    @GetMapping("/{assignmentID}")
     public ResponseEntity<?> getOneAssignment(@PathVariable Long assignmentID, @AuthenticationPrincipal User user){
         Optional<Assignment>assignmentOpt=assignmentService.findById(assignmentID);
         AssignmentResponse response=new AssignmentResponse(assignmentOpt.orElse(new Assignment()));
@@ -43,6 +46,11 @@ public class AssignmentController {
                                         @RequestBody Assignment assignment){
         Assignment newAssignment=assignmentService.updateAssignment(assignmentID,assignment);
         return ResponseEntity.ok(newAssignment);
+    }
+    @GetMapping("/getSubmitted")
+    public ResponseEntity<?>getSubmitted(@AuthenticationPrincipal User user){
+        Set<Assignment>assignmentsOpt=assignmentService.findAllSubmitted();
+        return ResponseEntity.ok(assignmentsOpt);
     }
 
 
