@@ -7,3 +7,4 @@ fetch = FetchType.LAZY = fetch when needed(load the entity object when mentionne
 @JsonFormat(shape = JsonFormat.Shape.OBJECT): Before an Enum to make accessible the attributes inside the enum
 @RequestParam: it is used to receive data from the GET method (React), it is the equivalent of @RequestBody for the POST method (React)
 @AuthenticationPrincipal (User user): get infos of the admin user
+@relation[exp @onetomany](Optional=true) means we can not assign any object to our table in that column

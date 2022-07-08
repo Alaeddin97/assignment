@@ -31,7 +31,6 @@ const Dashboard = () => {
   };
   return (
     <div>
-      {console.log(parseJwt(jwt))}
       <div className="d-flex justify-content-end" 
       style={{cursor:"pointer"}}
       onClick={()=>{

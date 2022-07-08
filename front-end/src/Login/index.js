@@ -8,39 +8,29 @@ function Login(props) {
   const [motdepasse, setMotdepasse] = useState();
 
   function seConnecter() {
-   // if (!jwt) {
-      const obj = {
-        username: utilisateur,
-        password: motdepasse,
-      };
-      fetch("api/auth/login", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify(obj),
-      })
-        .then((resp) => Promise.all([resp.json(), resp.headers]))
-        .then(([body, headers]) => {
-          setJwt(headers.get("authorization"));
-          window.location.href=`/Dashboard`;
-
-        });
+    // if (!jwt) {
+    const obj = {
+      username: utilisateur,
+      password: motdepasse,
+    };
+    fetch("api/auth/login", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify(obj),
+    })
+      .then((resp) => Promise.all([resp.json(), resp.headers]))
+      .then(([body, headers]) => {
+        setJwt(headers.get("authorization"));
+        window.location.href = `/Dashboard`;
+      });
     //}
+  
   }
-
-  function parseJwt(jwt){
-    try {
-      return JSON.parse(atob(jwt.split('.')[1]));
-    } catch (e) {
-      return null;
-    }
-  };
-
 
   return (
     <div>
-      {console.log(parseJwt(jwt))}
       <Container>
         <Row className="justify-content-center align-items-center">
           <Col md="8" lg="6">

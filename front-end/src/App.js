@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useEffect, jwt_decode } from "react";
+import React, { useState,jwt_decode } from "react";
 import { Routes, Route } from "react-router-dom";
 import AssignmentView from "./Assignment";
 import Dashboard from "./Dashboard";
@@ -16,8 +15,8 @@ function App() {
   
   function parseJwt(jwt){
     if(jwt){
-
       setRoles(jwt_decode(jwt).authorities[0]);
+      console.log("jwt_decode: ");
       console.log(jwt_decode(jwt));
     }return[];
   }

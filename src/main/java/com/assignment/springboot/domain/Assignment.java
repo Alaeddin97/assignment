@@ -13,10 +13,11 @@ public class Assignment {
     private String githubUrl;
     private String branch;
     private int number;
-    private String name;
     private String codeReviewVideoUrl;
     @ManyToOne(optional = false)
     private User user;
+    @ManyToOne
+    private User reviewer;
 
 
     //constructors
@@ -28,6 +29,14 @@ public class Assignment {
     public Assignment() {
     }
     //getters setters
+
+    public User getReviewer() {
+        return reviewer;
+    }
+
+    public void setReviewer(User reviewer) {
+        this.reviewer = reviewer;
+    }
 
     public Long getId() {
         return id;

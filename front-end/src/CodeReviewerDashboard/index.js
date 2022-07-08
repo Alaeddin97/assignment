@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import jwt_decode from "jwt-decode";
 import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
 import { Badge, Button, Card, Col, Row } from "react-bootstrap";
@@ -8,11 +8,33 @@ const CodeReviewerDashboard = () => {
   const [jwt, setJwt] = useLocalState("", "jwt");
   const [assignments, setAssignments] = useState();
 
+  function claimAssignment(assignment) {
+    const decodedJwt = jwt_decode(jwt);
+    const user = {
+      username: decodedJwt.sub,
+      authorities: jwt_decode(jwt).authorities,
+    };
+    assignment.reviewer = user;
+    assignment.status = "in review";
+    ajax(
+      "api/assignments/updateAssignment/" + assignment.id,
+      "POST",
+      jwt,
+      assignment
+    ).then((data) => {
+      console.log(`data: ${data}`);
+    });
+  }
   useEffect(() => {
     ajax("api/assignments/assignmentsList", "GET", jwt).then((data) => {
       setAssignments(data);
       console.log(data);
     });
+  }, []);
+
+  useEffect(() => {
+    console.log("jwt_decode: ");
+    console.log(jwt_decode(jwt));
   }, []);
 
   return (
@@ -42,7 +64,7 @@ const CodeReviewerDashboard = () => {
           <div className="d-flex flex-wrap bd-highlight example-parent">
             {assignments ? (
               assignments.map((assignment) => (
-                <div className="p-2 bd-highlight col-example">
+                <div key={assignment.id} className="p-2 bd-highlight col-example">
                   {assignment.status === "Submitted" ? (
                     <Card style={{ width: "22rem" }}>
                       <Card.Body className="d-flex flex-column">
@@ -52,25 +74,17 @@ const CodeReviewerDashboard = () => {
                         </Card.Subtitle>
                         <Card.Text>
                           <p>
-                            {" "}
-                            <b>Code Review Video URL:</b>
-                            {assignment.codeReviewVideoUrl}
+                            <b>Code Review Video URL:</b>{assignment.codeReviewVideoUrl}
                           </p>
                           <p>
-                            <b>Github URL:</b>
-                            {assignment.githubUrl}
+                            <b>Github URL:</b>{assignment.githubUrl}
                           </p>
                           <p>
-                            <b>Branch:</b>
-                            {assignment.branch}
+                            <b>Branch:</b>{assignment.branch}
                           </p>
                         </Card.Text>
-                        <Button
-                          onClick={() => {
-                            window.location.href = `/assignments/${assignment.id}`;
-                          }}
-                        >
-                          Edit
+                        <Button onClick={() => claimAssignment(assignment)}>
+                          Claim
                         </Button>
                       </Card.Body>
                     </Card>
