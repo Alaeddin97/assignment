@@ -52,20 +52,20 @@ public class AssignmentController {
             @PathVariable Long assignmentID,
             @AuthenticationPrincipal User user,
             @RequestBody Assignment assignment) {
+        Assignment assignment1 = assignmentService.findById(assignmentID).orElse(assignment);
         User reviewer = assignment.getReviewer();
         if (reviewer != null) {
             String username = reviewer.getUsername();
             User userReviewer = userService.findByUsername(username).orElse(new User());
             boolean isReviewer = authorityService.isReviewer(userReviewer, AuthorityEnum.ROLE_REVIEWER.name());
             if(isReviewer){
-                assignment.setReviewer(userReviewer);
+                assignment1.setReviewer(userReviewer);
                 assignmentService.updateAssignment(assignmentID,assignment);
             }
         }
         Assignment newAssignment = assignmentService.updateAssignment(assignmentID, assignment);
         return ResponseEntity.ok(newAssignment);
     }
-
     @GetMapping("/getSubmitted")
     public ResponseEntity<?> getSubmitted(@AuthenticationPrincipal User user) {
         Set<Assignment> assignmentsOpt = assignmentService.findAllSubmitted();
