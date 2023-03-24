@@ -17,9 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-
 public class AuthController {
-    @Autowired
+ /*   @Autowired
     private JwtUtil jwtUtil;
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -53,6 +52,6 @@ public class AuthController {
         jwtUtil.setSecret("HRlELXqpSB");
         Boolean isValid = jwtUtil.validateToken(token,user);
         return ResponseEntity.ok(isValid);
-    }
+    }*/
 
 }

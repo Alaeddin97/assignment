@@ -18,6 +18,7 @@ import javax.persistence.SecondaryTable;
 import java.util.Optional;
 import java.util.Set;
 
+
 @RestController
 @RequestMapping("/api/assignments")
 public class AssignmentController {
@@ -33,7 +34,7 @@ public class AssignmentController {
         Assignment newAssignment = assignmentService.save(user);
         return ResponseEntity.ok(newAssignment);
     }
-
+    @CrossOrigin(origins = "http://localhost:8080/api/assignments/assignmentsList")
     @GetMapping("/assignmentsList")
     public ResponseEntity<?> getAssignments(@AuthenticationPrincipal User user) {
         Set<Assignment> assignmentSet = assignmentService.assignmentSet(user);

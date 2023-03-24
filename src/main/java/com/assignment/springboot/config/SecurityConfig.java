@@ -17,9 +17,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
+//@EnableWebSecurity
+public class SecurityConfig {
+   /* @Autowired
+        extends WebSecurityConfigurerAdapter {
     UserDetailsService userDetailsService;
     @Autowired
     CustomPasswordEncorder customPasswordEncorder;
@@ -51,5 +52,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(customPasswordEncorder.getPasswordEncoder());
     }
-
+*/
 }
